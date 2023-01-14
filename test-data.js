@@ -99,7 +99,7 @@ export const testData = {
       destArray[randIndex] = tempValue;
     }
 
-    console.log(`before =${source},after= ${destArray}`);
+    //console.log(`before =${source},after= ${destArray}`);
 
     return destArray;
   },

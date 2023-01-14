@@ -1,7 +1,5 @@
 import { testData } from "./test-data.js";
-
-console.dir(testData.questions);
-console.dir(testData.prepareRandomQuestions());
+import * as markupService from "./markup-service.js";
 
 const questionsForTest = testData.prepareRandomQuestions();
 
@@ -26,108 +24,37 @@ function insertBefore(newNode, existingNode) {
   existingNode.parentNode.insertBefore(newNode, existingNode);
 }
 
-// const arrayShuffle = (arr) => {
-//   let currentIndex = arr.length,
-//     temporaryValue,
-//     randomIndex;
-
-//   while (0 !== currentIndex) {
-//     randomIndex = Math.floor(Math.random() * currentIndex);
-//     currentIndex -= 1;
-
-//     temporaryValue = arr[currentIndex];
-//     arr[currentIndex] = arr[randomIndex];
-//     arr[randomIndex] = temporaryValue;
-//   }
-
-//   return arr;
-// };
-
-const createCheckboxElement = (question, answers) => {
-  return `
-        <h2 class="test_title">${question}</h2>
-        <div class="variantes">
-            <div class="variant">
-                <input id="var1" name="${question}" value="${answers[0]}" type="checkbox" />
-                <label for="${question}">${answers[0]}</label>
-            </div>
-            <div class="variant">
-                <input id="var2" name="${question}" value="${answers[1]}" type="checkbox" />
-                <label for="${question}">${answers[1]}</label>
-            </div>
-            <div class="variant">
-                <input id="var3" name="${question}" value="${answers[2]}" type="checkbox" />
-                <label for="${question}">${answers[2]}</label>
-            </div>
-            <div class="variant">
-                <input id="var4" name="${question}" value="${answers[3]}" type="checkbox" />
-                <label for="${question}">${answers[3]}</label>
-            </div>
-        </div>`;
-};
-
-const createSelectElement = (question, answers) => {
-  return `
-    <h2 class="test_title">${question}</h2>
-        <select name="${question}">
-            <option value="${answers[0]}">${answers[0]}</option>
-            <option value="${answers[1]}">${answers[1]}</option>
-            <option value="${answers[2]}">${answers[2]}</option>
-            <option value="${answers[3]}">${answers[3]}</option>
-        </select>
-    </div>`;
-};
-
-const createRadioElement = (question, answers) => {
-  return `
-        <h2 class="test_title">${question}</h2>
-        <div class="variantes">
-            <div class="variant">
-                <input type="radio" id="contact1" name="${question}" value="${answers[0]}" />
-                <label for="${question}">${answers[0]}</label>
-            </div>
-            <div class="variant">
-                <input type="radio" id="contact2" name="${question}" value="${answers[1]}" />
-                <label for="${question}">${answers[1]}</label>
-            </div>
-            <div class="variant">
-                <input type="radio" id="contact3" name="${question}" value="${answers[2]}" />
-                <label for="${question}">${answers[2]}</label>
-            </div>
-            <div class="variant">
-                <input type="radio" id="contact4" name="${question}" value="${answers[3]}" />
-                <label for="${question}">${answers[3]}</label>
-            </div>
-        </div>`;
-};
-
-const createInputElement = (question) => {
-  return `
-        <h2 class="test_title">${question}</h2>
-        <input type="text" placeholder="Answer..." name="${question}" required />
-    `;
-};
-
 const createTestBlock = (arr) => {
   let questionNum = 1;
   return arr.map((el) => {
-    let shuffledAnswers = el.answers; //arrayShuffle(el.answers);
     const child = document.createElement("form");
     child.className = "test_item";
     child.id = questionNum;
 
     switch (el.type) {
       case "checkbox":
-        child.innerHTML = createCheckboxElement(el.question, shuffledAnswers);
+        child.innerHTML = markupService.makeCheckboxElement(
+          el.question,
+          el.answers
+        );
         break;
       case "select":
-        child.innerHTML = createSelectElement(el.question, shuffledAnswers);
+        child.innerHTML = markupService.makeSelectElement(
+          el.question,
+          el.answers
+        );
         break;
       case "radio":
-        child.innerHTML = createRadioElement(el.question, shuffledAnswers);
+        child.innerHTML = markupService.makeRadioElement(
+          el.question,
+          el.answers
+        );
         break;
       case "input":
-        child.innerHTML = createInputElement(el.question, shuffledAnswers);
+        child.innerHTML = markupService.makeInputElement(
+          el.question,
+          el.answers
+        );
         break;
     }
 
@@ -193,11 +120,18 @@ testBtn.addEventListener("click", (e) => {
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "/");
+
   xhr.setRequestHeader("score", resultObj.points);
+
   xhr.setRequestHeader(
     "author",
-    `${resultObj.group} ${resultObj.surname} ${resultObj.name}`
+    `${encodeURIComponent(resultObj.group)} ${encodeURIComponent(
+      resultObj.surname
+    )} ${encodeURIComponent(resultObj.name)}`
   );
+
+  console.dir(xhr);
+
   xhr.send();
 
   testBlock[0].style.display = "none";
