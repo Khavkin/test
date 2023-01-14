@@ -3,19 +3,24 @@ import { testData } from "./test-data.js";
 console.dir(testData.questions);
 console.dir(testData.prepareRandomQuestions());
 
-let startInput = document.getElementById("startInput");
+const questionsForTest = testData.prepareRandomQuestions();
 
-let startBtn = document.getElementById("startBtn");
-let testBtn = document.getElementById("testBtn");
-let resultBtn = document.getElementById("endBtn");
+const startInput = document.getElementById("startInput");
 
-let startBlock = document.getElementsByClassName("start_block");
-let testBlock = document.getElementsByClassName("test_block");
-let resultBlock = document.getElementsByClassName("result_block");
+const startBtn = document.getElementById("startBtn");
+const testBtn = document.getElementById("testBtn");
+const resultBtn = document.getElementById("endBtn");
 
-let testForm = document.getElementsByClassName("test_form");
+const startBlock = document.getElementsByClassName("start_block");
+const testBlock = document.getElementsByClassName("test_block");
+const resultBlock = document.getElementsByClassName("result_block");
 
-let resultAnswers = [];
+const testForm = document.getElementsByClassName("test_form");
+
+let student = {};
+let resultObj = {};
+
+const resultAnswers = [];
 
 function insertBefore(newNode, existingNode) {
   existingNode.parentNode.insertBefore(newNode, existingNode);
@@ -40,7 +45,7 @@ function insertBefore(newNode, existingNode) {
 
 const createCheckboxElement = (question, answers) => {
   return `
-        <div class="test_title">${question}</div>
+        <h2 class="test_title">${question}</h2>
         <div class="variantes">
             <div class="variant">
                 <input id="var1" name="${question}" value="${answers[0]}" type="checkbox" />
@@ -63,7 +68,7 @@ const createCheckboxElement = (question, answers) => {
 
 const createSelectElement = (question, answers) => {
   return `
-    <div class="test_title">${question}</div>
+    <h2 class="test_title">${question}</h2>
         <select name="${question}">
             <option value="${answers[0]}">${answers[0]}</option>
             <option value="${answers[1]}">${answers[1]}</option>
@@ -75,7 +80,7 @@ const createSelectElement = (question, answers) => {
 
 const createRadioElement = (question, answers) => {
   return `
-        <div class="test_title">${question}</div>
+        <h2 class="test_title">${question}</h2>
         <div class="variantes">
             <div class="variant">
                 <input type="radio" id="contact1" name="${question}" value="${answers[0]}" />
@@ -98,7 +103,7 @@ const createRadioElement = (question, answers) => {
 
 const createInputElement = (question) => {
   return `
-        <div class="test_title">${question}</div>
+        <h2 class="test_title">${question}</h2>
         <input type="text" placeholder="Answer..." name="${question}" required />
     `;
 };
@@ -137,13 +142,13 @@ startBtn.addEventListener("click", (e) => {
   let name = startInput.value;
   let arr = name.split(" ");
 
-  const student = {
+  student = {
     group: arr[0],
     surname: arr[1] || "",
     name: arr[2] || "",
   };
 
-  createTestBlock(testData.prepareRandomQuestions());
+  createTestBlock(questionsForTest);
 
   startBlock[0].style.display = "none";
   testBlock[0].style.display = "flex";
@@ -155,7 +160,7 @@ testBtn.addEventListener("click", (e) => {
   let results = [];
   let points = 0;
 
-  questionsArr.map((el, index) => {
+  questionsForTest.map((el, index) => {
     let form = document.getElementById(`${index + 1}`);
     let formData = new FormData(form);
 
@@ -170,7 +175,7 @@ testBtn.addEventListener("click", (e) => {
   });
 
   for (let i = 0; i < results.length; i++) {
-    let correctSort = questionsArr[i].correctAnswers.sort();
+    let correctSort = questionsForTest[i].correctAnswers.sort();
     let resSort = results[i].answers.sort();
 
     if (JSON.stringify(correctSort) === JSON.stringify(resSort)) points += 1;
