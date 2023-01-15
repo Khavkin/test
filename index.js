@@ -26,9 +26,15 @@ const chatId = "-1001777998867";
 
 app.use(express.static(__dirname));
 
+app.use(express.json());
+
 app.post("/", (req, res) => {
+  const progress = req.body;
+  console.log(progress); // результаты тестирования
+
   let { score, author, count } = req.headers;
   author = decodeURIComponent(author);
+
   bot.sendMessage(
     chatId,
     `Тест виконав: ${author}\nРезультати: ${score}/${count}`

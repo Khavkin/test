@@ -1,7 +1,7 @@
 export class Student {
-  #fio;
-  #group;
-  #speciality;
+  #fio = "";
+  #group = "";
+  #speciality = "";
 
   constructor({ fio = "", group = "", speciality = "" }) {
     this.#fio = fio;
@@ -70,17 +70,29 @@ export class Progress extends Student {
     return this.#test;
   }
 
-  addAttempt({ score = 0, test = "" }) {
-    if (test === this.#test) {
+  addAttempt({ fio = "", group = "", speciality = "", score = 0, test = "" }) {
+    if (
+      this.#test === test &&
+      this.fio === fio &&
+      this.group === group &&
+      this.speciality === speciality
+    ) {
+      console.log("add ");
       this.#attempt += 1;
       this.#scores.push(score);
     } else {
       this.#test = test;
       this.#scores = [score];
       this.#attempt = 1;
+      this.fio = fio;
+      this.group = group;
+      this.speciality = speciality;
     }
   }
 
+  toJSON() {
+    return this.getInfo();
+  }
   getAverageScore() {
     if (this.#attempt === 0) {
       console.log(`${this.fio} тесты не проходил`);
@@ -102,5 +114,13 @@ export class Progress extends Student {
         this.#test
       }; Attempts:${this.#attempt}; Average Score: ${this.getAverageScore()} `
     );
+  }
+  getInfo() {
+    return {
+      ...super.getInfo(),
+      test: this.#test,
+      attempt: this.#attempt,
+      averageScore: this.getAverageScore(),
+    };
   }
 }

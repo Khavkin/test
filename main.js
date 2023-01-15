@@ -2,29 +2,53 @@ import { testData } from "./test-data.js";
 import * as markupService from "./markup-service.js";
 import { Student, Progress } from "./classes.js";
 
+const SPECIALITY = "Специальность";
+const TEST = "HTML";
+
 //!**************test
-const st = new Progress({
-  fio: "Вася Пупкин",
-  group: "АА-01",
-  cpeciality: "Столяр",
-});
-st.showInfo();
+// const st = new Progress({
+//   fio: "Вася Пупкин",
+//   group: "АА-01",
+//   speciality: "Столяр",
+// });
+// st.showInfo();
 
-st.addAttempt({ score: 5, test: "GGG" });
-st.showInfo();
+// st.addAttempt({
+//   fio: "Вася Пупкин",
+//   group: "АА-01",
+//   speciality: "Столяр",
+//   score: 5,
+//   test: "GGG",
+// });
+// st.showInfo();
 
-//console.log(st.getInfo());
-st.addAttempt({ score: 10, test: "GGG" });
-st.showInfo();
+// //console.log(st.getInfo());
+// st.addAttempt({
+//   fio: "Вася Пупкин",
+//   group: "АА-01",
+//   speciality: "Столяр",
+//   score: 10,
+//   test: "GGG",
+// });
+// st.showInfo();
 
-//console.log(st.getInfo());
-st.addAttempt({ score: 5, test: "GGG1" });
-st.showInfo();
+// //console.log(st.getInfo());
+// //st.fio = "Леха Левый";
+// st.addAttempt({
+//   fio: "Леха Левый",
+//   group: "АА-01",
+//   speciality: "Столяр",
+//   score: 5,
+//   test: "GGG1",
+// });
+// st.showInfo();
+
+// console.log(st.getInfo());
 
 //console.log(st.getInfo());
 //!*************test
 
-const questionsForTest = testData.prepareRandomQuestions();
+let questionsForTest = []; // testData.prepareRandomQuestions();
 
 const startInput = document.getElementById("startInput");
 
@@ -32,14 +56,18 @@ const startBtn = document.getElementById("startBtn");
 const testBtn = document.getElementById("testBtn");
 const resultBtn = document.getElementById("endBtn");
 
-const startBlock = document.getElementsByClassName("start_block");
-const testBlock = document.getElementsByClassName("test_block");
-const resultBlock = document.getElementsByClassName("result_block");
+const startBlock = document.querySelector(".start_block");
+const testBlock = document.querySelector(".test_block");
+const resultBlock = document.querySelector(".result_block");
 
-const testForm = document.getElementsByClassName("test_form");
+const testForm = document.querySelector(".test_form");
 
 let student = {};
 let resultObj = {};
+let results = [];
+let points = 0;
+
+const progress = new Progress({});
 
 const resultAnswers = [];
 
@@ -81,13 +109,23 @@ const createTestBlock = (arr) => {
         break;
     }
 
-    insertBefore(child, testForm[0].firstElementChild);
+    insertBefore(child, testForm.firstElementChild);
     questionNum++;
   });
 };
 
+const clearTestBlock = () => {
+  [...testForm.getElementsByClassName("test_item")].forEach((element) => {
+    console.log("remove:", element);
+    element.remove();
+  });
+  //console.log("end of clearing");
+};
+
 startBtn.addEventListener("click", (e) => {
   e.preventDefault();
+
+  questionsForTest = testData.prepareRandomQuestions();
 
   let name = startInput.value;
   let arr = name.split(" ");
@@ -100,15 +138,15 @@ startBtn.addEventListener("click", (e) => {
 
   createTestBlock(questionsForTest);
 
-  startBlock[0].style.display = "none";
-  testBlock[0].style.display = "flex";
+  startBlock.classList.add("is-hidden");
+  testBlock.classList.remove("is-hidden");
 });
-
-let results = [];
-let points = 0;
 
 testBtn.addEventListener("click", (e) => {
   e.preventDefault();
+
+  results = [];
+  points = 0;
 
   questionsForTest.map((el, index) => {
     let form = document.getElementById(`${index + 1}`);
@@ -139,13 +177,27 @@ testBtn.addEventListener("click", (e) => {
     count: questionsForTest.length,
   };
 
-  var madeBy = document.getElementsByClassName("result_score1");
-  var score = document.getElementsByClassName("result_score2");
-  madeBy[0].innerHTML = `Виконав: ${resultObj.group} ${resultObj.surname} ${resultObj.name}`;
-  score[0].innerHTML = `Оцінка: ${resultObj.points}/${resultObj.count}`;
+  const madeBy = document.querySelector(".result_score1");
+  const score = document.querySelector(".result_score2");
+  madeBy.innerHTML = `Виконав: ${resultObj.group} ${resultObj.surname} ${resultObj.name}`;
+  score.innerHTML = `Оцінка: ${resultObj.points}/${resultObj.count}`;
 
-  var xhr = new XMLHttpRequest();
+  progress.addAttempt({
+    fio: `${resultObj.surname} ${resultObj.name}`,
+    group: student.group,
+    score: resultObj.points,
+    speciality: SPECIALITY,
+    test: TEST,
+  });
+
+  progress.showInfo();
+
+  const json = JSON.stringify(progress.getInfo());
+
+  const xhr = new XMLHttpRequest();
   xhr.open("POST", "/");
+
+  xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
 
   xhr.setRequestHeader("score", resultObj.points);
   xhr.setRequestHeader("count", resultObj.count);
@@ -157,14 +209,19 @@ testBtn.addEventListener("click", (e) => {
     )} ${encodeURIComponent(resultObj.name)}`
   );
 
-  console.dir(xhr);
+  // console.dir(xhr);
 
-  xhr.send();
+  xhr.send(json);
 
-  testBlock[0].style.display = "none";
-  resultBlock[0].style.display = "flex";
+  testBlock.classList.add("is-hidden");
+  resultBlock.classList.remove("is-hidden");
 });
 
 resultBtn.addEventListener("click", () => {
-  location.reload();
+  //location.reload();
+
+  clearTestBlock();
+  //console.log('show startblock';)
+  startBlock.classList.remove("is-hidden");
+  resultBlock.classList.add("is-hidden");
 });
