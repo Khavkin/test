@@ -1,5 +1,28 @@
 import { testData } from "./test-data.js";
 import * as markupService from "./markup-service.js";
+import { Student, Progress } from "./classes.js";
+
+//!**************test
+const st = new Progress({
+  fio: "Вася Пупкин",
+  group: "АА-01",
+  cpeciality: "Столяр",
+});
+st.showInfo();
+
+st.addAttempt({ score: 5, test: "GGG" });
+st.showInfo();
+
+//console.log(st.getInfo());
+st.addAttempt({ score: 10, test: "GGG" });
+st.showInfo();
+
+//console.log(st.getInfo());
+st.addAttempt({ score: 5, test: "GGG1" });
+st.showInfo();
+
+//console.log(st.getInfo());
+//!*************test
 
 const questionsForTest = testData.prepareRandomQuestions();
 
@@ -113,17 +136,19 @@ testBtn.addEventListener("click", (e) => {
   resultObj = {
     ...student,
     points,
+    count: questionsForTest.length,
   };
 
   var madeBy = document.getElementsByClassName("result_score1");
   var score = document.getElementsByClassName("result_score2");
   madeBy[0].innerHTML = `Виконав: ${resultObj.group} ${resultObj.surname} ${resultObj.name}`;
-  score[0].innerHTML = `Оцінка: ${resultObj.points}/${questionsForTest.length}`;
+  score[0].innerHTML = `Оцінка: ${resultObj.points}/${resultObj.count}`;
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "/");
 
   xhr.setRequestHeader("score", resultObj.points);
+  xhr.setRequestHeader("count", resultObj.count);
 
   xhr.setRequestHeader(
     "author",

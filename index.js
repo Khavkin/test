@@ -27,26 +27,29 @@ const chatId = "-1001777998867";
 app.use(express.static(__dirname));
 
 app.post("/", (req, res) => {
-  let { score, author } = req.headers;
+  let { score, author, count } = req.headers;
   author = decodeURIComponent(author);
-  // bot.sendMessage(chatId, `Тест виконав: ${author}\nРезультати: ${score}/10`);
+  bot.sendMessage(
+    chatId,
+    `Тест виконав: ${author}\nРезультати: ${score}/${count}`
+  );
 
-  // transporter.sendMail(
-  //   {
-  //     from: process.env.SMTP_USER,
-  //     to: "hdm@ukr.net",
-  //     subject: "Результати тестування",
-  //     html: `<h1>Тест виконав: ${author}</h1>
-  //         <h1>Результат: ${score}/10</h1>`,
-  //   },
-  //   (error, info) => {
-  //     if (error) {
-  //       console.log(error);
-  //     } else {
-  //       console.log("Email sent: " + info.response);
-  //     }
-  //   }
-  //);
+  transporter.sendMail(
+    {
+      from: process.env.SMTP_USER,
+      to: "hdm@ukr.net",
+      subject: "Результати тестування",
+      html: `<h1>Тест виконав: ${author}</h1>
+          <h1>Результат: ${score}/${count}</h1>`,
+    },
+    (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    }
+  );
 });
 
 app.get("/", (req, res) => {
