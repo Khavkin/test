@@ -6,7 +6,7 @@ const makeCheckboxElement = (question, answers) => {
     markupString =
       markupString +
       `<label class="variant">
-                <input id="var1" name="${question}" value="${answers[0]}" type="checkbox" />
+                <input id="var1" name="${question}" value="${element}" type="checkbox" />
                 ${element}
             </label>`;
   });
@@ -34,7 +34,7 @@ const makeRadioElement = (question, answers) => {
     markupString =
       markupString +
       `<label class="variant">
-                <input type="radio" name="${question}" value="${answers[0]}" />
+                <input type="radio" name="${question}" value="${element}" />
                 ${element}
             </label>`;
   });

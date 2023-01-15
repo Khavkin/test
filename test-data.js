@@ -59,25 +59,25 @@ export const testData = {
         "За допомогою якого тега  можливо вставити малюнок? Напишіть свій варіант:",
       type: "input",
       answers: [],
-      correctAnswers: ["'document.getElementById('img')"],
+      correctAnswers: ["img"],
     },
     {
       question:
         "За допомогою якої властивості можна зробити відступи всередені комірки таблиці або іношо обєекта. Напишіть свій варіант:",
       type: "input",
       answers: [],
-      correctAnswers: ["document.getElementById('padding')"],
+      correctAnswers: ["padding"],
     },
     {
       question: "Як зробити спливаючу підказку при наведенні на посилання?",
       type: "radio",
       answers: [
-        '(a title="Підсказка" href="#")Посилання(/a)',
-        '(a caption="Підсказка" href="#")Посилання(/a)',
-        '(a alt="Підсказка" href="#")Посилання(/a)',
-        '(a caption="Підсказка"  )Посилання(/a)',
+        "(a title='Підсказка' href='#')Посилання(/a)",
+        "(a caption='Підсказка' href='#')Посилання(/a)",
+        "(a alt='Підсказка' href='#')Посилання(/a)",
+        "(a caption='Підсказка'  )Посилання(/a)",
       ],
-      correctAnswers: ['(a title="Підсказка" href="#")Посилання(/a)'],
+      correctAnswers: ["(a title='Підсказка' href='#')Посилання(/a)"],
     },
   ],
   randomize(source) {
@@ -86,7 +86,6 @@ export const testData = {
       randIndex;
     const destArray = source.slice();
 
-    // console.log(source, destArray);
     const arrayLength = destArray.length;
 
     while (curIndex != 0) {
@@ -99,8 +98,6 @@ export const testData = {
       destArray[randIndex] = tempValue;
     }
 
-    //console.log(`before =${source},after= ${destArray}`);
-
     return destArray;
   },
 
@@ -109,16 +106,8 @@ export const testData = {
 
     randArray.forEach((value, index) => {
       if (value.type === "radio" || value.type === "select") {
-        //  console.log(value.answers);
         const tmp = testData.randomize(value.answers);
         randArray[index].answers = tmp;
-        // console.log(`index= ${index},
-        //     ${value.question},
-        //     before =${value.answers},
-        //     after= ${tmp},
-        //     randArray[index].answers=${randArray[index].answers}`);
-        //   console.log(value.answers);
-        //  console.log(randArray[index].answers);
       }
     });
 

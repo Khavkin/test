@@ -81,11 +81,11 @@ startBtn.addEventListener("click", (e) => {
   testBlock[0].style.display = "flex";
 });
 
+let results = [];
+let points = 0;
+
 testBtn.addEventListener("click", (e) => {
   e.preventDefault();
-
-  let results = [];
-  let points = 0;
 
   questionsForTest.map((el, index) => {
     let form = document.getElementById(`${index + 1}`);
@@ -105,6 +105,8 @@ testBtn.addEventListener("click", (e) => {
     let correctSort = questionsForTest[i].correctAnswers.sort();
     let resSort = results[i].answers.sort();
 
+    console.log(JSON.stringify(correctSort), JSON.stringify(resSort));
+
     if (JSON.stringify(correctSort) === JSON.stringify(resSort)) points += 1;
   }
 
@@ -116,7 +118,7 @@ testBtn.addEventListener("click", (e) => {
   var madeBy = document.getElementsByClassName("result_score1");
   var score = document.getElementsByClassName("result_score2");
   madeBy[0].innerHTML = `Виконав: ${resultObj.group} ${resultObj.surname} ${resultObj.name}`;
-  score[0].innerHTML = `Оцінка: ${resultObj.points}/10`;
+  score[0].innerHTML = `Оцінка: ${resultObj.points}/${questionsForTest.length}`;
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "/");

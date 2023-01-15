@@ -31,22 +31,22 @@ app.post("/", (req, res) => {
   author = decodeURIComponent(author);
   // bot.sendMessage(chatId, `Тест виконав: ${author}\nРезультати: ${score}/10`);
 
-  transporter.sendMail(
-    {
-      from: process.env.SMTP_USER,
-      to: "hdm@ukr.net",
-      subject: "Результати тестування",
-      html: `<h1>Тест виконав: ${author}</h1>
-          <h1>Результат: ${score}/10</h1>`,
-    },
-    (error, info) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    }
-  );
+  // transporter.sendMail(
+  //   {
+  //     from: process.env.SMTP_USER,
+  //     to: "hdm@ukr.net",
+  //     subject: "Результати тестування",
+  //     html: `<h1>Тест виконав: ${author}</h1>
+  //         <h1>Результат: ${score}/10</h1>`,
+  //   },
+  //   (error, info) => {
+  //     if (error) {
+  //       console.log(error);
+  //     } else {
+  //       console.log("Email sent: " + info.response);
+  //     }
+  //   }
+  //);
 });
 
 app.get("/", (req, res) => {
